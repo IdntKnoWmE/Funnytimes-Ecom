@@ -69,22 +69,49 @@
         {% for i in products %}
         <div class="col-sm-4 p-2">
           <div class="cardd">
-            <img src="/media/{{i.image}}" class="cardd-img-top" style="width: 100%;height: 400px; object-fit: contain;" alt="...">
+            <a href="productview/{{i.product_id}}"><img src="/media/{{i.image}}" class="cardd-img-top" style="width: 100%;height: 400px; object-fit: contain;" alt="..."></a>
             <div class="cardd-body p-1 mt-1" style="background-color: rgb(235, 214, 214);">
-              <h5 class="cardd-title">{{i.product_name}}</h5>
+            <a href="productview/{{i.product_id}}"><h5 class="cardd-title">{{i.product_name}}</h5></a>
               <p class="cardd-text"  >
                 {% load custom_tags %}
-                {% for x in i.description|split:';' %}
+                {% for x in i.description|split:';'|slice:':2' %}
                 <p style="color: green; font-weight: 600;">{{x}}</p>
                 {% endfor %}
+                
 
               </p>
               <p class="text text-success fw-bold"> Price : Rs {{i.prod_price}}</p>
-              <a href="#" class="btn btn-primary">Add to Cart</a>
+              <button id="pr{{i.product_id}}" class="btn btn-primary cart">Add to Cart</button>
             </div>
           </div>
         </div>
       {% endfor %}
     </div>
       
+  {% endblock %}
+
+  {% block js %}
+    <script>
+      console.log("working");
+      if(localStorage.getItem('cart') == null){
+        var cart = {};
+      }
+      else{
+        cart = JSON.parse(localStorage.getItem('cart'));
+        document.getElementById('cart').innerHTML = Object.keys(cart).length;
+      }
+      $ ('.cart').click(function(){
+        console.log("clicked");
+        var idstr = this.id.toString();
+        if(cart[idstr]!=undefined){
+          cart[idstr] = cart[idstr]+1;
+        }
+        else{
+          cart[idstr] = 1;
+        }
+        console.log(cart);
+        localStorage.setItem('cart',JSON.stringify(cart));
+        document.getElementById('cart').innerHTML = Object.keys(cart).length;
+      });
+    </script>
   {% endblock %}

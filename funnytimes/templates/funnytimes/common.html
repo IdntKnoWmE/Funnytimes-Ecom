@@ -105,10 +105,10 @@
         <div class="collapse navbar-collapse" id="navbarText">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item ms-2">
-              <a class="nav-link active text-warning nav-txt" href="about"><i class="text text-decoration-underline  text-warning">About Us</i></a>
+              <a class="nav-link active text-warning nav-txt" href="/funnytimes/about"><i class="text text-decoration-underline  text-warning">About Us</i></a>
             </li>
             <li class="nav-item ms-2">
-              <a class="nav-link text-warning nav-txt" href="contact"><i class="text text-decoration-underline  text-warning">Contact</i></a>
+              <a class="nav-link text-warning nav-txt" href="/funnytimes/contact"><i class="text text-decoration-underline  text-warning">Contact</i></a>
             </li>
           </ul>
           <ul class="navbar-nav ms-2 me-auto mb-2 mb-lg-0">
@@ -129,10 +129,14 @@
           </ul>
           <ul class="navbar-nav ms-2 mb-2 mb-lg-0" ">
             <li class="nav-item ">
-              <a class="nav-link active text-warning nav-txt" aria-current="page" href="login"><i class="text text-decoration-underline  text-warning">Login</i></a>
+              <a class="nav-link active text-warning nav-txt" aria-current="page" href="/funnytimes/login"><i class="text text-decoration-underline  text-warning">Login</i></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active text-warning nav-txt" href="checkout"><i class="text text-decoration-underline  text-warning">Checkout</i><i class="bi bi-cart-check fa-lg icon"></i></a>
+              <a
+                class="nav-link active text-warning" 
+                href="/funnytimes/checkout"
+              ><i class='text text-decoration-underline text-warning' data-bs-toggle="popover" data-bs-trigger="hover" data-bs-container="body" data-bs-html="true" data-bs-placement="bottom" data-bs-content='Click here to checkout yours<i id = "popover_cart"></i> Items.'
+              >Checkout</i><i class="bi bi-cart-check fa-lg icon"><sup id="cart">0</sup></i></a>
             </li>
           </ul>
       </div>
@@ -154,7 +158,11 @@
 
 
 
-    
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous">
+      </script>
   
       <script
         src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
@@ -175,4 +183,25 @@
 
 
     <!-- Footer ends here -->
+
+    {% block js %}{% endblock %}
+    <script>
+      if(localStorage.getItem('cart') == null){
+        var cart = {};
+      }
+      else{
+        cart = JSON.parse(localStorage.getItem('cart'));
+        document.getElementById('cart').innerHTML = Object.keys(cart).length;
+      }
+      $ ('.cart').hover(function(){
+        document.getElementById('popover_cart').innerHTML = Object.keys(cart).length;
+      });
+    
+      
+      
+      var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+      var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+      return new bootstrap.Popover(popoverTriggerEl);
+      });
+      </script>
   </html>
