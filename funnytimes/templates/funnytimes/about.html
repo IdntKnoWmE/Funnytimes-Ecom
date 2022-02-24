@@ -3,10 +3,12 @@
   {% block title %} About Us {% endblock %}
   {% load static %}
   {% block css %}
-    .about-img{
-      background: url( {% static 'funnytimes\smiley.jpg' %}) ;
-      background-size: cover ;
-    }
+    <style>
+      .about-img{
+        background: url( {% static 'funnytimes\smiley.jpg' %}) ;
+        background-size: cover ;
+      }
+    </style>
   {% endblock %}
 
   {% block body %}
@@ -22,7 +24,7 @@
       <div class="bg-dark me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center text-white overflow-hidden">
         <div class="my-3 py-3">
           <h2 class="display-5">Developed By</h2>
-          <p class="lead fw-bold">Jayant Sharma</p>
+          <a href="resume" class="lead fw-bold">Jayant Sharma</a>
         </div>
         <img class="bg-light shadow-sm mx-auto" style="width: 60%; height: 500px; border-radius: 21px 21px 0 0; object-fit: contain;" src="{% static 'funnytimes\me.jpg' %}"></img>
       </div>

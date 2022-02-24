@@ -12,5 +12,6 @@ urlpatterns = [
     path('checkout',views.checkout,name="checkout"),
     path('search',views.search,name="searchprod"),
     path('login',views.login,name="login"),
-    path('signup',views.signup,name="signup")
+    path('signup',views.signup,name="signup"),
+    path('resume',views.resume,name="resume"),
 ]

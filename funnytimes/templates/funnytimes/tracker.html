@@ -2,7 +2,181 @@
 
 {% block title %} Tracker {% endblock  %}
 
-{% block body %}
- <h1> WELCOME TO Tracker </h1>
+{% block css %}
+    <style>
+        #cap_code{
+            color: green;
+            -webkit-user-drag: none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
 
+
+        }
+        td,th{
+            font-size: large;
+            font-weight: 600;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+
+        {% if iftrack %}
+            <h1 class='alert alert-success text text-center'>Your order details<h1>
+
+            <div style='background-color:yellowgreen'>
+                <table class='table table-hover table-bordered'>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th> Ordered products </th>
+                            <th> Order Quantity </th>
+                        </tr>
+                    </thead>
+                    <tbody id='orderbody'>
+        
+                    </tbody>
+                </table>
+            </div>
+
+            
+            <div style='background-color:yellowgreen'>
+                <table class='table table-hover table-bordered'>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th> Order Updates </th>
+                            <th> DateTime </th>
+                        </tr>
+                    </thead>
+                    <tbody id='tbody'>
+        
+                    </tbody>
+                </table>
+            </div>
+        
+
+        
+        {% else %}
+        
+            <h2 class="alert alert-success text text-center">Track your order</h2> 
+            
+            <form method="post" action="/funnytimes/tracker" style="background-color: yellowgreen;" onsubmit="return validcap()">
+                {% csrf_token %}
+                <h3 class="text text-center p-4"> Enter deatils of Order to track.</h3>
+                <div class="row p-2 my-3">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-6">
+                        <h5><label for="order_id">Order Id</label></h5>
+                        <input type="text" class="form-control" name=order_id placeholder="Order Id">
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+                <div class="row p-2">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-6">
+                    <h5><label for="order_email">Email</label></h5>
+                    <input type="email" class="form-control" name=order_email placeholder="Email with you order">
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+
+                <div class="row p-2 my-3">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-6">
+                        <h5><label for="captcha">Enter captcha:</label></h5>
+                        <div class="row">
+                            <div class="col-sm-5 my-2">
+                                <h5 class="form-control" id="cap_code"></h5>
+                            </div>
+                            <div class="col-sm-5 my-2">
+                                <input type="text" class="form-control" name="cap_confirm" id="cap_confirm" placeholder="Enter Captcha Code">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+
+                <div class="row p-2 my-3">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-6 text text-center">
+                    <button type="submit" class="btn btn-danger btn-lg w-100">Track</button>
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+                
+                <br>
+            </form>
+        {% endif %}
+    </div>
+
+{% endblock %}
+
+{% block js %}
+
+    <script>
+        {% if iftrack %}
+            var s = "";
+            var i = 1;
+            cart = {{ order|safe }};
+            for( var items in cart ){
+                if(items != 'total_item'){
+                    s = s + "<tr> <th>" + i + "</th>";
+                    s = s + "<td>" + cart[items][1] + "</td>";
+                    s = s + "<td>" + cart[items][0] + "</td>" + "</tr>";
+                    i = i + 1; 
+                }
+            }
+                
+            document.getElementById('orderbody').innerHTML = s;
+                                        
+            var d = "";
+            var k = 1;
+            {% for items in tracks %}
+                d = d + "<tr> <th>" + k + "</th>";
+                d = d + "<td>" + "{{items.update}}" + "</td>";
+                d = d + "<td>" + "{{items.time}}" + "</td>" + "</tr>";
+                k = k + 1; 
+            {% endfor %}
+            document.getElementById('tbody').innerHTML = d;
+            
+
+
+            
+        {% else %}
+            
+            var alpha = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V'
+                        ,'W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','a','b','c','d','e','f','g','h','i',
+                        'j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z', '!','@','#','$','%','^','&','*','+'];
+            var a = alpha[Math.floor(Math.random()*71)];
+            var b = alpha[Math.floor(Math.random()*71)];
+            var c = alpha[Math.floor(Math.random()*71)];
+            var d = alpha[Math.floor(Math.random()*71)];
+            var e = alpha[Math.floor(Math.random()*71)];
+            var f = alpha[Math.floor(Math.random()*71)];
+
+            var code = a+b+c+d+e+f;
+            document.getElementById("cap_code").innerHTML=code;
+        
+            function validcap(){
+                confrm = document.getElementById("cap_confirm").value;
+
+                if(code == confrm){
+                    return true
+                }
+                else{
+                    alert("Wrong Captcha");
+                    return false
+                }
+
+            }
+        {% endif %}
+
+    </script>
+    
 {% endblock %}

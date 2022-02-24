@@ -2,35 +2,214 @@
 
 {% block title %} Product name {% endblock  %}
 
-{% block body %}
- 
-    <div class="container">
-        <div class="row my-4">
-            <div class="col-sm-4">
-                <img src="/media/{{prod.image}}" class="cardd-img-top" style="width: 100%;height: 100%; object-fit: contain;" alt="...">
-            </div>
-            <div class="col-sm-2"></div>
-            <div class="col-sm-6">
-                <h2 class="cardd-title">{{prod.product_name}}</h2>
-                <br>
-                <br>
-                <ul>
-                {% load custom_tags %}
-                {% for x in prod.description|split:";" %}
-                <h4>
-                    <li style="color: green; font-weight: 600;">{{x}} </li>
+{% block css %}
+    <style>
+        .img-col{
+            background-color: rgb(255, 255, 255);
+            border-radius: 8px;
+            height: 50%;
+            padding: 20px 16px;
+            border: 1px solid rgb(240, 240, 240);
+        }
+        .prod-col1, .prod-col2{
+            background-color: rgb(255, 255, 255);
+            border-radius: 8px;
+            margin-bottom: 16px;
+            padding: 20px 16px;
+            border: 2px solid rgb(240, 240, 240);
+            
+        }
+        .cardd-title, .prod-det{
+            color: rgb(54, 238, 63);
+            font-style: normal;
+            font-weight: 600;
+            font-size: 30px;
+            font-family: "Mier demi";
+        }
+        .dis_price{
+            color: rgb(51, 51, 51);
+            font-style: normal;
+            font-weight: 700;
+            font-size: 32px;
+            line-height: 40px;
+            font-family: "Mier bold";
+            margin: 0px;
+            padding: 0px;
+        }
+        .prd_price{
+            color: red;
+            font-style: normal;
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 20px;
+            font-family: "Mier book";
+            margin: 0px;
+            padding: 0px;
+            text-decoration: line-through;
+        }
+        .detail{
+            font-style: normal;
+            font-weight: 500;
+            font-size: large;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 
-                </h4>
-                {% endfor %}
-                </ul>
-                <br>
-                <h3 class="fw-bold mx-4"> ₹{{prod.prod_price}} </h3>
+        }
+        .disc{
+            color: rgb(3, 141, 99);
+            font-style: normal;
+            font-weight: 600;
+            font-size: 18px;
+            line-height: 24px;
+            font-family: "Mier demi";
+            margin: 0px;
+            padding: 0px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-4 me-2 img-col my-2">
+                <img src="/media/{{prod.image}}" class="cardd-img-top" style="width: 100%;height: 500px; object-fit: contain;" alt="...">
+            </div>
+            <div class="col-sm-6 p-3">
+                <div class="row prod-col1">
+                    <div class="alert alert-primary cardd-title" id="prod_name">{{prod.product_name}}</div>
+                    <p class="text text-center">(Best Reviewed Products)</p>
+                    
+                    <div class="pricee d-flex p-4">
+                    <h4 class="dis_price mx-2">Rs. <span id="dis_price"></span></h4> 
+
+                    <p class="prd_price p-2" >Rs. <span id="prod_price">{{prod.prod_price}}</span></p>
+
+                    <h5 class="disc p-1 mx-2">10% off</h5>
+                    </div>
+                </div>
+                <div class="row prod-col2">
+                    <div class="alert alert-info prod-det" style="color: yellowgreen;">Product Details</div>
+                    <ul class="detail mx-3 p-4">
+                        {% load custom_tags %}
+                        {% for i in prod.description|split:";" %}
+                            <li> {{i}} </li>
+                        {% endfor %}
+
+                    </ul>
+                </div>
                 <div class="butt mx-4">
-                <a href="" class="btn btn-success btn-lg">Buy now </a>
-                <a href="" class="btn btn-primary btn-lg my-2">Add to Cart </a>
+                <button  class="btn btn-success btn-lg buy" id="pr{{prod.product_id}}">Buy now </button>
+                <span id="qtypr{{prod.product_id}}" class="qtybutton">
+                    <button class="btn btn-primary btn-lg my-2 cart" id="pr{{prod.product_id}}">Add to Cart </button>
+                </span>
                 </div>
             </div>
         </div>
     </div>
+
+{% endblock %}
+
+{% block js %}
+    <script>
+        var price = document.getElementById('prod_price').innerHTML;
+        console.log(price);
+        document.getElementById('dis_price').innerHTML=price-Math.floor(0.1*price);
+
+        if(localStorage.getItem('cart') == null){
+            cart = {};
+            cart.total_item = [0];
+        }
+        else{
+            cart = JSON.parse(localStorage.getItem('cart'));
+
+            $ ('.cart').click(function(){
+
+                var idstr = this.id.toString();
+                if(cart[idstr]!=undefined){
+                cart[idstr][0] = cart[idstr][0]+1;
+                }
+                else{
+                var qty =1;
+                var name = document.getElementById("prod_name").innerHTML;
+                var price = document.getElementById("prod_price").innerHTML;
+                cart[idstr] = [qty,name,price];
+                }
+                if(cart.total_item!=undefined){
+                cart.total_item[0] = cart.total_item[0] + 1;
+                }
+                else{
+                cart.total_item = [1];
+                }
+                update_popcart(cart);
+                update_cart_qty(idstr,cart);
+                document.getElementById('cart').innerHTML = cart.total_item[0];
+                localStorage.setItem('cart',JSON.stringify(cart));
+
+                //console.log(cart.total_item[0]);
+            });
+
+            // on click on add to cart show qty option
+            function update_cart_qty(idstr,cart){
+                document.getElementById('qty'+idstr).innerHTML = "<button id='minus" + idstr + "'class='btn btn-primary minus'>-</button>" +
+                "<span id='val" + idstr + "'>  " + cart[idstr][0] + "  </span>" + "<button id='plus" + idstr + "'class = 'btn btn-primary plus'>+</button>";
+                
+            };
+
+            // action on clicking minus
+            $ ('.qtybutton').on('click',"button.minus",function(){
+                var btn_id = this.id.slice(5,);
+                if(cart[btn_id][0]>0){
+                    cart[btn_id][0] = cart[btn_id][0] - 1;
+                    cart[btn_id][0] = Math.max(cart[btn_id][0],0);
+                    cart.total_item[0] = cart.total_item[0] - 1;
+                    cart.total_item[0] = Math.max(cart.total_item[0],0);
+                    update_popcart(cart);
+                    update_cart_qty(btn_id,cart);
+                    document.getElementById('cart').innerHTML = cart.total_item[0];
+                    localStorage.setItem('cart',JSON.stringify(cart));
+                    //console.log(cart); 
+                }
+
+            });
+            
+            
+            // action on clicking plus
+            $ ('.qtybutton').on('click',"button.plus",function(){
+                var btn_id = this.id.slice(4,);
+                cart[btn_id][0] = cart[btn_id][0] + 1;
+                cart.total_item[0] = cart.total_item[0] + 1;
+                update_popcart(cart);
+                update_cart_qty(btn_id,cart);
+                document.getElementById('cart').innerHTML = cart.total_item[0];
+                localStorage.setItem('cart',JSON.stringify(cart));
+                console.log(cart); 
+
+            });
+
+
+        }
+        $('.buy').click(function(){
+            console.log(cart);
+            var p_id = this.id.toString();
+            if(cart[p_id] == undefined){
+                var qty =1;
+                var name = document.getElementById("prod_name").innerHTML;
+                var price = document.getElementById("prod_price").innerHTML;
+                cart[p_id] = [qty,name,price];
+                cart.total_item[0] = cart.total_item[0] + 1;
+            }
+            console.log(cart);
+            if(cart[p_id][0]==0){
+                cart[p_id][0] = 1;
+                cart.total_item[0] = cart.total_item[0] + 1;
+            }
+            console.log(cart);
+            update_popcart(cart);
+            localStorage.setItem('cart',JSON.stringify(cart));
+            document.location = "/funnytimes/checkout";
+
+        });
+
+    </script>
 
 {% endblock %}

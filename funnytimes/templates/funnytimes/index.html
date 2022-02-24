@@ -6,26 +6,26 @@
   {% load static %}
 
   {% block css %}
-    .carimg{
-      width:100%;
-      height: 300px;
-      object-fit: contain;
+    <style>
+      .carimg{
+        width:100%;
+        height: 300px;
+        object-fit: contain;
       
-    }
-
+      }
+    </style>
   {% endblock %}
 
 
   {% block body %}
-    <div class="container-fluid">
 
       <!-- Carousul -->
 
       <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-indicators">
-          <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-          <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-          <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        <div class="carousel-indicators mb-0">
+          <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1" style="background-color: red;"></button>
+          <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2" style="background-color: red;"></button>
+          <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3" style="background-color: red;"></button>
         </div>
         <div class="carousel-inner">
           <div class="carousel-item active">
@@ -49,19 +49,16 @@
         </div>
 
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="carousel-control-prev-icon" style="background-color: blue;" aria-hidden="true"></span>
           <span class="visually-hidden">Previous</span>
         </button>
 
         <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="carousel-control-next-icon" style="background-color: blue;" aria-hidden="true"></span>
           <span class="visually-hidden">Next</span>
         </button>
       </div>
     
-    
-    <!-- Container end here -->
-    </div>
     <br>
     <h1 class="alert alert-success text-center">Popular Items</h1>
     <div class="container m-8 text-center">
@@ -69,9 +66,9 @@
         {% for i in products %}
         <div class="col-sm-4 p-2">
           <div class="cardd">
-            <a href="productview/{{i.product_id}}"><img src="/media/{{i.image}}" class="cardd-img-top" style="width: 100%;height: 400px; object-fit: contain;" alt="..."></a>
+            <a href="productview/{{i.product_id}}"><img src="/media/{{i.image}}" class="cardd-img-top" " style="width: 100%;height: 400px; object-fit: contain;" alt="..."></a>
             <div class="cardd-body p-1 mt-1" style="background-color: rgb(235, 214, 214);">
-            <a href="productview/{{i.product_id}}"><h5 class="cardd-title">{{i.product_name}}</h5></a>
+            <a href="productview/{{i.product_id}}"><h5 class="cardd-title" id="namepr{{i.product_id}}">{{i.product_name}}</h5></a>
               <p class="cardd-text"  >
                 {% load custom_tags %}
                 {% for x in i.description|split:';'|slice:':2' %}
@@ -80,38 +77,101 @@
                 
 
               </p>
-              <p class="text text-success fw-bold"> Price : Rs {{i.prod_price}}</p>
+              <p class="text text-success fw-bold"> Price : Rs <span id="pricepr{{i.product_id}}">{{i.prod_price}}</span></p>
+              <span id="qtypr{{i.product_id}}" class="qtybutton">
               <button id="pr{{i.product_id}}" class="btn btn-primary cart">Add to Cart</button>
+              </span>
             </div>
           </div>
         </div>
       {% endfor %}
+    </div>
     </div>
       
   {% endblock %}
 
   {% block js %}
     <script>
-      console.log("working");
+      // Cart loading
       if(localStorage.getItem('cart') == null){
         var cart = {};
+        
+        cart.total_item = [0];
       }
       else{
         cart = JSON.parse(localStorage.getItem('cart'));
-        document.getElementById('cart').innerHTML = Object.keys(cart).length;
+        document.getElementById('cart').innerHTML = cart.total_item[0];
       }
+
+      // Cart click function where n click it adds items in cart
       $ ('.cart').click(function(){
-        console.log("clicked");
+
         var idstr = this.id.toString();
         if(cart[idstr]!=undefined){
-          cart[idstr] = cart[idstr]+1;
+          cart[idstr][0] = cart[idstr][0]+1;
         }
         else{
-          cart[idstr] = 1;
+          var qty =1;
+          var name = document.getElementById("name"+idstr).innerHTML;
+          var price = document.getElementById("price"+idstr).innerHTML;
+          cart[idstr] = [qty,name,price];
         }
-        console.log(cart);
+        if(cart.total_item!=undefined){
+          cart.total_item[0] = cart.total_item[0] + 1;
+        }
+        else{
+          cart.total_item = [1];
+        }
+        update_popcart(cart);
+        update_cart_qty(idstr,cart);
+        document.getElementById('cart').innerHTML = cart.total_item[0];
         localStorage.setItem('cart',JSON.stringify(cart));
-        document.getElementById('cart').innerHTML = Object.keys(cart).length;
+        
+        //console.log(cart.total_item[0]);
       });
+      console.log(cart);
+
+      // on click on add to cart show qty option
+      function update_cart_qty(idstr,cart){
+        document.getElementById('qty'+idstr).innerHTML = "<button id='minus" + idstr + "'class='btn btn-primary minus'>-</button>" +
+         "<span id='val" + idstr + "'>  " + cart[idstr][0] + "  </span>" + "<button id='plus" + idstr + "'class = 'btn btn-primary plus'>+</button>";
+        
+      };
+
+      // action on clicking minus
+      $ ('.qtybutton').on('click',"button.minus",function(){
+        var btn_id = this.id.slice(5,);
+        if(cart[btn_id][0] == 0){
+                return;
+              }
+        cart[btn_id][0] = cart[btn_id][0] - 1;
+        cart[btn_id][0] = Math.max(cart[btn_id][0],0);
+        cart.total_item[0] = cart.total_item[0] - 1;
+        cart.total_item[0] = Math.max(cart.total_item[0],0);
+        update_popcart(cart);
+        update_cart_qty(btn_id,cart);
+        document.getElementById('cart').innerHTML = cart.total_item[0];
+        if (cart[btn_id][0] == 0){
+          delete cart[btn_id];
+        }
+        localStorage.setItem('cart',JSON.stringify(cart));
+        //console.log(cart); 
+
+      });
+      
+      
+      // action on clicking plus
+      $ ('.qtybutton').on('click',"button.plus",function(){
+        var btn_id = this.id.slice(4,);
+        cart[btn_id][0] = cart[btn_id][0] + 1;
+        cart.total_item[0] = cart.total_item[0] + 1;
+        update_popcart(cart);
+        update_cart_qty(btn_id,cart);
+        document.getElementById('cart').innerHTML = cart.total_item[0];
+        localStorage.setItem('cart',JSON.stringify(cart));
+        console.log(cart); 
+
+      });
+
     </script>
   {% endblock %}

@@ -3,6 +3,240 @@
 {% block title %} Checkout {% endblock  %}
 
 {% block body %}
- <h1> WELCOME TO Checkout </h1>
+
+    <div class="container my-2 p-3">
+      <div class="row">
+        <div class="col-sm-7 p-3 ms-1" style="background-color: white;">
+          <h3>My Cart(<span id="cartlength"></span>)</h3>
+          <hr>
+          <div id="ifcart">
+            <table class="table table-borderless" >
+              <thead>
+                <th scope="row"><h4>S.No</h4></th>
+                <th scope="row"><h4>Item Name</h4></th>
+                <th scope="row"><h4>Quantity</h4></th>
+              </thead>
+              <tbody id="items" style="font-weight: 500;">
+              </tbody>
+            </table>
+          </div>
+        </div>
+          
+      
+        <div class="col-sm-4 p-3 mx-1 " style="background-color: white; height: 25%;">
+          <h3> PRICE DETAILS </h3>
+          <hr>
+          <table class="table table-borderless" >
+            <tbody style="font-weight: 500;">
+              <tr>
+                <td><p>Price(<span id="cartl"></span> Item)</p></td>
+                <td id="total_pr">Rs.0</td>
+              </tr>
+              <tr>
+                <td><p>Discount(10%)</p></th>
+                <td id="dis_pr" style="color: green;">Rs.0</td>
+              </tr>
+
+              <tr>
+                <td><p>Charges</p></td>
+                <td id="del_pr" style="color: green;">Rs.0</td>
+              </tr>
+              <tr>
+                <td><h5>Total Amount</h5></td>
+                <td><h5 id="total">Rs.0</h5></td>
+              </tr>
+            </tbody>
+          </table>
+          <p style="color: green;">You will save <span id="disc">Rs.0</span> on this order</p>
+        </div>
+
+      </div>
+      <div id="ifcart1">
+      <div class="row">
+        <div class="my-3 p-3 col-sm-11 ms-1" style="background-color: rgb(121, 197, 121);">
+          <h1 class="text text-center"> Customer Details</h1>
+
+          <form class="my-2" action="/funnytimes/checkout" method="POST">{% csrf_token %}
+            <div class="row my-2">
+              <div class="form-group col-sm-6">
+                <label for="cust_name">Name</label>
+                <input type="text" class="form-control" id="cust_name" name="cust_name" placeholder="Enter Your Name..." required>
+              </div>
+
+              <div class="form-group col-sm-6">
+                <label for="cust_email">Email</label>
+                <input type="email" class="form-control" id="cust_email" name="cust_email" placeholder="Enter Your Email...">
+              </div>
+            </div>
+
+            <div class="form-group col-sm-6">
+              <label for="cust_phone">Phone</label>
+              <input type="tel" class="form-control" id="cust_phone" name="cust_phone" placeholder="Enter your mobile number" required>
+            </div>
+
+
+            <div class="form-group col-sm-10 my-2">
+              <label for="cust_address">Address</label>
+              <input type="text" class="form-control" id="cust_address" name="cust_address" placeholder="1234 Main St" required>
+            </div>
+
+            <div class="form-group col-sm-10">
+              <label for="cust_address2">Address 2</label>
+              <input type="text" class="form-control" id="cust_address2" name="cust_address2" placeholder="Apartment, studio, or floor">
+            </div>
+
+            <div class="row my-2">
+              <div class="form-group col-md-6 ">
+                <label for="cust_city">City</label>
+                <input type="text" class="form-control" name="cust_city" id="cust_city" required>
+              </div>
+
+              <div class="form-group col-md-4">
+                <label for="cust_state">State</label>
+                <input type="text" id="cust_state"  name="cust_state" class="form-control" required>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="form-group col-md-4">
+                <label for="cust_cont">Country</label>
+                <input type="text" class="form-control" id="cust_cont" name="cust_cont" required>
+              </div>
+              
+              <div class="form-group col-md-4">
+                <label for="cust_zip">Zip Code</label>
+                <input type="text" class="form-control" id="cust_zip" name="cust_zip" required>
+              </div>
+
+            </div>
+            <input type="hidden" id="order_items" name="order_items">
+            <button type="submit" class="btn btn-primary btn-lg my-3">Place Order</button>
+          </form>
+        </div>
+      </div>
+      </div>
+
+    </div>
+{% endblock %}
+
+{% block js %}
+
+
+  <script>
+    if(localStorage.getItem('cart') == null){
+          var cart = {};
+          document.getElementById('cartlength').innerHTML=0;
+          document.getElementById('ifcart').innerHTML="<h2> Please Add Items to checkout </h2>";
+          document.getElementById('ifcart1').innerHTML="";
+        }
+        else{
+          cart = JSON.parse(localStorage.getItem('cart'));
+          document.getElementById('cartlength').innerHTML=cart.total_item;
+
+
+          
+          function update_checkout(){
+            document.getElementById("items").innerHTML="";
+            document.getElementById('cartlength').innerHTML=cart.total_item;
+            console.log(cart);
+            var total_pr = 0;
+            var i=1;
+            if(cart.total_item[0] != 0){
+              for (var item in cart){
+                if (item != "total_item"){
+                  var sm = "";
+                  sm = sm + "<tr> <td scope='row" + "'>" + i + ".</td>"
+                  sm = sm + "<td>" + "<p>" + cart[item][1] + "</p><p>" + "<button id='" + item  + "'class='btn btn-warning btn-sm' onclick='removeclick(this.id)" + "'> Remove </button>"
+                  + "</p></td>";
+                  sm = sm + "<td>" + "<button id='"+ item  + "'class='btn btn-primary btn-sm' onclick='minusclick(this.id)" + "'>-</button>" +
+                  "<span id='val" + item + "'>  " + cart[item][0] + "  </span>" + "<button id='" + item + "'class = 'btn btn-primary btn-sm' onclick='plusclick(this.id)'>+</button>"
+                  + "</td" + "</tr>";
+                  total_pr = total_pr + cart[item][2] * cart[item][0];
+                  i = i+1;
+                  $("#items").append(sm);
+                }
+              }
+            }
+            else{
+              document.getElementById('ifcart').innerHTML="<h2> Please Add Items to checkout </h2>";
+              document.getElementById('ifcart1').innerHTML="";
+            }
+            // Filling Price Details here
+            document.getElementById("total_pr").innerHTML="Rs. "+total_pr;
+            document.getElementById('cartl').innerHTML=cart.total_item[0];
+            var disc = Math.floor(total_pr*0.1);
+            document.getElementById('dis_pr').innerHTML="-Rs. "+disc;
+            
+            var total = total_pr - disc ;
+            if(total == 0){
+              document.getElementById("del_pr").innerHTML="+Rs. 0";
+            }
+            else if(total>0 && total<1000){
+              document.getElementById("del_pr").innerHTML="+Rs. 100";
+              total = total + 100;
+            }
+            else{
+              document.getElementById("del_pr").innerHTML=" Free ";  
+            }
+            document.getElementById("total").innerHTML="Rs." + total;
+            document.getElementById('disc').innerHTML="Rs. "+disc;
+          };
+          update_checkout();
+          
+          // Minus click Button
+          function minusclick(btn_id){
+              //console.log("hello");
+              //console.log(btn_id,cart);
+              if(cart[btn_id][0] == 1){
+                return;
+              }
+              cart[btn_id][0] = cart[btn_id][0] -1;
+              cart[btn_id][0] = Math.max(cart[btn_id][0],0);
+              cart.total_item[0] = Math.max(cart.total_item[0] - 1,0);
+              update_checkout();
+              update_popcart(cart);
+              document.getElementById('cart').innerHTML = cart.total_item[0];
+              localStorage.setItem('cart',JSON.stringify(cart));
+              
+            };
+          
+          //Plus Click Button
+          function plusclick(btn_id){
+              cart[btn_id][0] = cart[btn_id][0] + 1;
+              cart.total_item[0] = cart.total_item[0] + 1;
+              update_checkout();
+              update_popcart(cart);
+              document.getElementById('cart').innerHTML = cart.total_item[0];
+              localStorage.setItem('cart',JSON.stringify(cart));
+              
+              
+
+          };
+
+          //Remove Click Button
+          function removeclick(btn_id){
+            cart.total_item[0] = cart.total_item[0] - cart[btn_id][0];
+            delete cart[btn_id];
+            console.log(cart);
+            update_checkout();
+            update_popcart(cart);
+            document.getElementById('cart').innerHTML = cart.total_item[0];
+            localStorage.setItem('cart',JSON.stringify(cart));
+            
+
+          };
+          
+        //save cart into model
+        $('#order_items').val(JSON.stringify(cart));
+        {% if thanks %}
+        alert("Thanks for ordering with us. Please Track your order with ID: {{o_id}}.");
+        localStorage.clear();
+        document.location="/funnytimes";
+        {% endif %}
+
+
+        }
+        
+  </script>
 
 {% endblock %}
