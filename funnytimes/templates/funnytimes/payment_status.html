@@ -1,0 +1,20 @@
+{% extends 'funnytimes/common.html' %}
+{% block body %}
+    <div class="container" style="text-align: center; margin-top: 15%;">
+        {% if verify %}
+            <script>
+                localStorage.clear();
+            </script>
+            <i class="fa fa-check-circle" aria-hidden="true" style="font-size: 80px; color: green;"></i>
+            <h2 style="text-align: center;">Thank you. Your payment was successful.</h2>
+            <h2 style="text-align: center;">You can Track your order using <b>{{o_id}}</b>.</h2>
+
+
+        {% else %}
+            <i class="fa fa-times" aria-hidden="true" style="font-size: 80px; color: red;"></i>
+            <h2 style="text-align: center;">Oops, There is some error</h2>
+            <h2 style="text-align: center;">Please Try Again.</h2>
+
+        {% endif %}
+    </div>
+{% endblock %}

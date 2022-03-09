@@ -196,7 +196,12 @@
                 var name = document.getElementById("prod_name").innerHTML;
                 var price = document.getElementById("prod_price").innerHTML;
                 cart[p_id] = [qty,name,price];
-                cart.total_item[0] = cart.total_item[0] + 1;
+                if(cart.total_item!=undefined){
+                    cart.total_item[0] = cart.total_item[0] + 1;
+                    }
+                else{
+                    cart.total_item = [1];
+                    }
             }
             console.log(cart);
             if(cart[p_id][0]==0){

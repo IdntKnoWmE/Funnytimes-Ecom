@@ -110,6 +110,7 @@
 
             </div>
             <input type="hidden" id="order_items" name="order_items">
+            <input type="hidden" id="order_price" name="order_price">
             <button type="submit" class="btn btn-primary btn-lg my-3">Place Order</button>
           </form>
         </div>
@@ -180,6 +181,8 @@
             }
             document.getElementById("total").innerHTML="Rs." + total;
             document.getElementById('disc').innerHTML="Rs. "+disc;
+            $('#order_price').val(total);
+            
           };
           update_checkout();
           
@@ -228,6 +231,8 @@
           
         //save cart into model
         $('#order_items').val(JSON.stringify(cart));
+        
+        
         {% if thanks %}
         alert("Thanks for ordering with us. Please Track your order with ID: {{o_id}}.");
         localStorage.clear();

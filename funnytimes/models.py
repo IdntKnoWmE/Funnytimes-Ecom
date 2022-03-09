@@ -1,5 +1,6 @@
 from statistics import mode
 from django.db import models
+from datetime import datetime
 
 # Create your models here.
 class Product(models.Model):
@@ -38,9 +39,16 @@ class Order(models.Model):
     cust_state = models.TextField(max_length=15)
     cust_country = models.TextField(max_length=15)
     order_items = models.TextField(max_length=500)
+    order_date = models.DateTimeField(default=datetime.now)
+    order_price = models.TextField(max_length=50,default=0)
+    razor_payment_id = models.TextField(max_length=100,blank=True)
+    razor_order_id = models.TextField(max_length=100,blank=True)
+    paid = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return self.cust_name + "_" + str(self.order_id)
+    class Meta:
+        ordering = ['order_date','order_id']    
 
 
 class Track_order(models.Model):
