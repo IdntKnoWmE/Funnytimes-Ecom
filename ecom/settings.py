@@ -54,8 +54,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'ecom.urls'
-CORS_ORIGIN_ALLOW_ALL = True
-CSRF_ALLOW_NULL_ORIGIN = True
 
 TEMPLATES = [
     {
