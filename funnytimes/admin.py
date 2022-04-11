@@ -18,9 +18,14 @@ class order_display(admin.ModelAdmin):
     list_filter = ['paid']
 
 
+class track_display(admin.ModelAdmin):
+    list_display = ['order_id','track_desc','track_time']
+    search_fields = ['order_id']
+    search_help_text = '____Search from Order Id____'
+
 
 # Register your models here.
 admin.site.register(Product)
 admin.site.register(Contact)
 admin.site.register(Order,order_display)
-admin.site.register(Track_order)
+admin.site.register(Track_order,track_display)

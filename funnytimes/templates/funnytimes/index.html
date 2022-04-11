@@ -163,8 +163,17 @@
       // action on clicking plus
       $ ('.qtybutton').on('click',"button.plus",function(){
         var btn_id = this.id.slice(4,);
+        if(cart.btn_id==undefined){
+          var qty =1;
+          var name = document.getElementById("name"+btn_id).innerHTML;
+          var price = document.getElementById("price"+btn_id).innerHTML;
+          cart[btn_id] = [qty,name,price];
+        }
+        else{
         cart[btn_id][0] = cart[btn_id][0] + 1;
+        }
         cart.total_item[0] = cart.total_item[0] + 1;
+        
         update_popcart(cart);
         update_cart_qty(btn_id,cart);
         document.getElementById('cart').innerHTML = cart.total_item[0];

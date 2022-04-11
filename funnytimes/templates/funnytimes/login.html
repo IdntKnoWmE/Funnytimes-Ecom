@@ -1,8 +1,167 @@
-{% extends 'funnytimes/common.html' %}
+{% load static %}
+<div class="modal fade" id="login" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content modal-cont" style="background-color: rgb(151, 218, 238);">
+            <div class="row">
+                <div class="col-sm-4 img-modal"
+                >
+                    
 
-{% block title %} Login {% endblock  %}
 
-{% block body %}
- <h1> WELCOME TO Login </h1>
+                </div>
 
-{% endblock %}
+                <div class="col-sm-8 form-modal">
+                    <div class="modal-header">
+                    <h4 class="modal-title w-100 text-center fw-bolder" id="loginLabel" style="color: rgb(11, 69, 230);">
+                        Welcome to Login 
+                    </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                                <form  method="post" action="/funnytimes" onsubmit="return validcap()>
+                                    {% csrf_token %}
+                    
+                                    <div class="form-group my-2">
+                                        <h5><label for="user_id">Email or Mobile number</label></h5>
+                                        <input type="text" class="form-control" id="user_id" name="user_id" placeholder="Enter email or Phone Number...">
+                                    </div>
+                                    <div class="form-group">
+                                        <h5><label for="password">Password</label></h5>
+                                        <input type="password" class="form-control" id="password" placeholder="Password">
+                                    </div>
+                                    <div class="form-group my-2">
+                                        <h5><label for="captcha">Enter captcha:</label></h5>
+                                        <div class="row">
+                                            <div class="col-sm-5 my-2">
+                                                <h5 class="form-control" id="cap_code"></h5>
+                                            </div>
+                                            <div class="col-sm-5 my-2">
+                                                <input type="text" class="form-control" name="cap_confirm" id="cap_confirm" placeholder="Enter Captcha Code">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="bt ">
+                                    <button type="submit" class="btn btn-primary btn-lg">Login</button>
+                                    </div>
+                                </form>
+                            
+                        
+                    </div>
+                    <div class="modal-footer">
+                    <h5 style="font-style: italic;
+                               color: rgb(35, 171, 224);
+                               "
+                    >
+                    <a href="#signup" data-bs-toggle="modal" data-bs-dismiss="modal">New to FunnyTimes? Create an account</a></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+  <div class="modal fade" id="signup" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content"  style="background-color: rgb(151, 218, 238);">
+        <div class="modal-header">
+            <h4 class="modal-title w-100 text-center fw-bolder" id="loginLabel" style="color: rgb(11, 69, 230);">
+                Welcome to Login 
+            </h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form  method="post" action="/funnytimes">
+                {% csrf_token %}
+                
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <h5><label for="fname">First Name</label></h5>
+                            <input type="text" class="form-control" id="fname" name="fname" >
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <h5><label for="lname">Last Name</label></h5>
+                            <input type="password" class="form-control" id="lname" name="lname">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group my-2">
+                    <h5><label for="email">Email</label></h5>
+                    <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="...@example.com ...">
+                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                </div>
+                <div class="form-group my-2">
+                    <h5><label for="mobile">Contact Number</label></h5>
+                    <input type="tel" class="form-control" id="mobile"  placeholder=" +1234567890...">
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <h5><label for="passw">Password</label></h5>
+                            <input type="password" class="form-control" id="passw" name="passw" placeholder="Password">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <h5><label for="cpassw">Password</label></h5>
+                            <input type="password" class="form-control" id="cpassw" name="cpassw" placeholder="Confirm Password">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group my-3">
+                    <input type="checkbox" id="check" name="check">
+                    <small><label for="check">By clicking the Checkbox Button, you are creating an account, and agree to FunnyTimes' Terms of Service and Privacy Policy</label></small>
+                    
+                </div>
+                
+                
+
+                <div class="bt ">
+                <button type="submit" class="btn btn-primary btn-lg">Signup</button>
+                </div>
+            </form>
+        
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" data-bs-target="#login" data-bs-toggle="modal" data-bs-dismiss="modal">Back to Login</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+<script>
+            var alpha = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V'
+                        ,'W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','a','b','c','d','e','f','g','h','i',
+                        'j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z', '!','@','#','$','%','^','&','*','+'];
+            var a = alpha[Math.floor(Math.random()*71)];
+            var b = alpha[Math.floor(Math.random()*71)];
+            var c = alpha[Math.floor(Math.random()*71)];
+            var d = alpha[Math.floor(Math.random()*71)];
+            var e = alpha[Math.floor(Math.random()*71)];
+            var f = alpha[Math.floor(Math.random()*71)];
+
+            var code = a+b+c+d+e+f;
+            document.getElementById("cap_code").innerHTML=code;
+        
+            function validcap(){
+                confrm = document.getElementById("cap_confirm").value;
+
+                if(code == confrm){
+                    return true
+                }
+                else{
+                    alert("Wrong Captcha");
+                    return false
+                }
+
+            }
+
+    </script>
