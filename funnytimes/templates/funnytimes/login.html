@@ -18,16 +18,16 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                                <form  method="post" action="/funnytimes" onsubmit="return validcap()>
-                                    {% csrf_token %}
+                                <form  method="post" action="/funnytimes/login" onsubmit="return validcap()">
+                                {% csrf_token %}
                     
                                     <div class="form-group my-2">
                                         <h5><label for="user_id">Email or Mobile number</label></h5>
-                                        <input type="text" class="form-control" id="user_id" name="user_id" placeholder="Enter email or Phone Number...">
+                                        <input type="text" class="form-control" id="user_id" name="user_id" placeholder="Enter email or Phone Number..." required>
                                     </div>
                                     <div class="form-group">
                                         <h5><label for="password">Password</label></h5>
-                                        <input type="password" class="form-control" id="password" placeholder="Password">
+                                        <input type="password" class="form-control" id="password" placeholder="Password" required>
                                     </div>
                                     <div class="form-group my-2">
                                         <h5><label for="captcha">Enter captcha:</label></h5>
@@ -36,7 +36,7 @@
                                                 <h5 class="form-control" id="cap_code"></h5>
                                             </div>
                                             <div class="col-sm-5 my-2">
-                                                <input type="text" class="form-control" name="cap_confirm" id="cap_confirm" placeholder="Enter Captcha Code">
+                                                <input type="text" class="form-control" name="cap_confirm" id="cap_confirm" placeholder="Enter Captcha Code" required>
                                             </div>
                                         </div>
                                     </div>
@@ -69,20 +69,20 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <form  method="post" action="/funnytimes">
+            <form  method="post" action="/funnytimes/signup" onsubmit="return validcheck()">
                 {% csrf_token %}
                 
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
                             <h5><label for="fname">First Name</label></h5>
-                            <input type="text" class="form-control" id="fname" name="fname" >
+                            <input type="text" class="form-control" id="fname" name="fname" required>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
                             <h5><label for="lname">Last Name</label></h5>
-                            <input type="password" class="form-control" id="lname" name="lname">
+                            <input type="text" class="form-control" id="lname" name="lname">
                         </div>
                     </div>
                 </div>
@@ -94,20 +94,20 @@
                 </div>
                 <div class="form-group my-2">
                     <h5><label for="mobile">Contact Number</label></h5>
-                    <input type="tel" class="form-control" id="mobile"  placeholder=" +1234567890...">
+                    <input type="number" class="form-control" id="mobile" name="mobile"  placeholder=" +1234567890..." required>
                 </div>
 
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
                             <h5><label for="passw">Password</label></h5>
-                            <input type="password" class="form-control" id="passw" name="passw" placeholder="Password">
+                            <input type="password" class="form-control" id="passw" name="passw" placeholder="Password" required>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
                             <h5><label for="cpassw">Password</label></h5>
-                            <input type="password" class="form-control" id="cpassw" name="cpassw" placeholder="Confirm Password">
+                            <input type="password" class="form-control" id="cpassw" name="cpassw" placeholder="Confirm Password" required>
                         </div>
                     </div>
                 </div>
@@ -117,9 +117,10 @@
                     <small><label for="check">By clicking the Checkbox Button, you are creating an account, and agree to FunnyTimes' Terms of Service and Privacy Policy</label></small>
                     
                 </div>
-                
-                
 
+                
+                
+                
                 <div class="bt ">
                 <button type="submit" class="btn btn-primary btn-lg">Signup</button>
                 </div>
@@ -162,6 +163,28 @@
                     return false
                 }
 
+            }
+
+            function validcheck(){
+                check = document.getElementById('check').checked;
+                console.log(check);
+
+                passw = document.getElementById('passw').value;
+                cpassw = document.getElementById('cpassw').value;
+
+                if(passw!=cpassw){
+                    alert('Password Mismatch');3
+                    return false
+
+                }
+
+                if(check == true){
+                    return true
+                }
+                else{
+                    alert("Please the Accept the terms!")
+                    return false
+                }
             }
 
     </script>

@@ -70,11 +70,10 @@
 {% block body %}
     <div class="container">
         <div class="row">
-            <div class="col-sm-1"></div>
-            <div class="col-sm-4 me-2 img-col my-2">
+            <div class="col-md-4 me-2 img-col my-2">
                 <img src="/media/{{prod.image}}" class="cardd-img-top" style="width: 100%;height: 500px; object-fit: contain;" alt="...">
             </div>
-            <div class="col-sm-6 p-3">
+            <div class="col-md-7 p-3">
                 <div class="row prod-col1">
                     <div class="alert alert-primary cardd-title" id="prod_name">{{prod.product_name}}</div>
                     <p class="text text-center">(Best Reviewed Products)</p>
@@ -97,7 +96,7 @@
 
                     </ul>
                 </div>
-                <div class="butt mx-4">
+                <div class="butt ">
                 <button  class="btn btn-success btn-lg buy" id="pr{{prod.product_id}}">Buy now </button>
                 <span id="qtypr{{prod.product_id}}" class="qtybutton">
                     <button class="btn btn-primary btn-lg my-2 cart" id="pr{{prod.product_id}}">Add to Cart </button>
