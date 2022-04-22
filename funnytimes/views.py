@@ -12,6 +12,10 @@ import math
 import json
 import razorpay
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.models import User
+from django.contrib import messages
+from django.contrib.auth import authenticate,login as auth_login,logout as auth_logout
+from django.contrib.auth.decorators import login_required
 
 
 #create razorpay client
@@ -67,7 +71,7 @@ def tracker(request):
         
 
     #print(tracks,iftrack)
-    print(o)  
+    #print(o)  
     return render(request,"funnytimes/tracker.html",{'iftrack':iftrack,'tracks':tracks,'order':o})
 
 
@@ -77,6 +81,10 @@ def prodview(request,id):
     return render(request,"funnytimes/productview.html",{'prod':fetch[0]})
 
 def checkout(request):
+
+    if not request.user.is_authenticated:
+        messages.info(request, "Please Login for checking out!")
+        return redirect('home')
 
     if request.method == "POST":
         cust_name = request.POST.get('cust_name')
@@ -119,13 +127,98 @@ def checkout(request):
         
     return render(request,"funnytimes/checkout.html")
 
+def searchMatch(query, item):
+    des = item.description.lower()
+    nam = item.product_name.lower()
+    cate = item.category.lower()
+    #print(des,nam,cate)
+    for q in query:
+        q=q.lower()
+        common_words = ['a','in','to','the','of','and','for','by','on','is',
+        'i','all','this','with','it','at','from','or','you','as','your','an',
+        'are','be','that','do','not','have','can','was','if','we','but','what',
+        'which','there','when','use','their','they','how','he','were','his','had',
+        'each','said','she','word']
+
+        if q in common_words:
+            continue
+        if q in des or q in nam or q in cate:
+            return True
+    return False
 
 def search(request):
-    return render(request,"funnytimes/search.html")
+
+    if request.method == 'GET':
+
+        qu = request.GET.get('search')
+        query = set(qu.split())
+        
+        all_product = Product.objects.all()
+
+        prod=[]
+        for item in all_product:
+
+            if searchMatch(query, item):
+                prod.append(item)
+        
+        c=math.ceil(len(prod)/3)
+        return render(request,"funnytimes/search.html",{'range':list(range(0,c,3)),'products':prod,'query':qu})
+    
+        
+    return HttpResponse('404 - NotFound! ')
+
+
+#@login_required(login_url='/funnytimes/')
+def logout(request):
+    if request.user.is_authenticated:
+        auth_logout(request)
+        messages.success(request, "Successfully logged out")
+        return redirect('home')
+    else:
+        return HttpResponse('404 - Not Found!')
+
 def login(request):
-    return render(request,"funnytimes/login.html")
+
+    if request.method == 'POST':
+        user_id = request.POST['user_id']
+        user_password = request.POST['password']
+        user=authenticate(username= user_id, password= user_password)
+        if user is not None:
+            auth_login(request, user)
+            messages.success(request, "Successfully Logged In")
+            return redirect("home")
+        else:
+            messages.error(request, "Invalid credentials! Please try again")
+            return redirect("home")
+
+
+    else:
+        return HttpResponse("404 -  Not Found!")
+
+
 def signup(request):
-    return render(request,'funnytimes/signup.html')
+    if request.method=='POST':
+        user_fname = request.POST['fname']
+        user_lname = request.POST['lname']
+        user_email = request.POST['email'].lower()
+        user_passw = request.POST['passw']
+
+        if User.objects.filter(username=user_email).exists():
+            messages.error(request,'Account already exist...')
+            return redirect('home')
+
+        else:
+
+            myuser = User.objects.create_user(user_email,user_email,user_passw)
+            myuser.first_name = user_fname
+            myuser.last_name = user_lname
+            myuser.save()
+
+            messages.success(request,'Congratulation! Your account has been created.')
+            return redirect('home')
+
+    else:
+        return HttpResponse('404 - Not Found!')
 
 def payment(request,info):
     

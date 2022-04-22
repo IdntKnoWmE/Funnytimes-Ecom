@@ -51,8 +51,9 @@
     }
 
     .nav-txt :hover{
-      font-size: larger;
+      font-weight: 500;
     }
+    
 
     
     body{
@@ -109,7 +110,7 @@
 
     <!-- Navigation bar -->
     <nav class="navbar sticky-top navbar-expand-xxl  navbar-light bg-nav">
-        <a class="navbar-brand nav-txt mx-2" href="/funnytimes/"><img src="{% static 'funnytimes/logo.png' %}" class="img-logo">
+        <a class="navbar-brand  mx-2" href="/funnytimes/"><img src="{% static 'funnytimes/logo.png' %}" class="img-logo">
           <i class="text text-decoration-underline fw-bold text-warning ">FunnyTimes</i></a>
         <button class="navbar-toggler text-warning" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
           <span>
@@ -132,33 +133,45 @@
               ></i></a>
             </li>
           </ul>
-          <ul class="navbar-nav ms-1 me-auto mb-2 mb-lg-0">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <form class="d-flex" action="search">
+              <form class="d-flex" action="search" method="get">
                 <input
                  class="search"
                   type="search"
                   placeholder="Search"
                   aria-label="Search"
+                  name = "search"
+                  id = "search"
 
                 />
-                <button class="btn btn-success ms-2" type="submit">
+                <button class="btn btn-success" type="submit">
                 Search
                 </button>
               </form>
             </li>
           </ul>
           
-          <ul class="navbar-nav ms-2 mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a
-                class="nav-link active text-warning nav-txt"
-                data-bs-toggle="modal" href="#login">
-                <i class='text text-decoration-underline text-warning'>
-                Login
-                </i>
-              </a>
-            </li>
+          <ul class="navbar-nav">
+            {% if user.is_authenticated %}
+              <li class="nav-item dropdown">
+                <button class="nav-link dropdown-toggle btn btn-success btn-sm" id="logindropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <strong style="color: white;"> Welcome, {{ request.user.first_name|lower|capfirst }} </strong> 
+                </button>
+                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="logindropdown">
+                  <li><a class="dropdown-item" href="logout">Logout</a></li>
+                </ul>
+              </li>
+            {% else %}
+              <li>
+                <button
+                  class="nav-link active btn btn-info"
+                  data-bs-toggle="modal" href="#login">
+                  Login
+                  
+                </button>
+              </li>
+              {% endif %}
             <li class="nav-item">
               <a
                 class="nav-link active text-warning" 
@@ -172,9 +185,19 @@
     {% include 'funnytimes/login.html' %}
 
     <!-- Navigation bar end -->
-    <div class="page" style="margin-top: 10px;">
+    <div class="page" >
+      {% for message in messages %}
+
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show m-0" role="alert">
+        <strong>Message : </strong> {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      
+
     
-    {% block body %} {% endblock %} 
+      {% endfor %}
+    
+      {% block body %} {% endblock %} 
     </div
 
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
