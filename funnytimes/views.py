@@ -83,7 +83,7 @@ def prodview(request,id):
 def checkout(request):
 
     if not request.user.is_authenticated:
-        messages.info(request, "Please Login for checking out!")
+        messages.error(request, "Please Login for checking out!")
         return redirect('home')
 
     if request.method == "POST":

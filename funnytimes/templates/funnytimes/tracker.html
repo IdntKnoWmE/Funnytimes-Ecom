@@ -92,10 +92,10 @@
                         <h5><label for="captcha">Enter captcha:</label></h5>
                         <div class="row">
                             <div class="col-sm-5 my-2">
-                                <h5 class="form-control" id="cap_code"></h5>
+                                <h5 class="form-control" id="track_cap_code"></h5>
                             </div>
                             <div class="col-sm-5 my-2">
-                                <input type="text" class="form-control" name="cap_confirm" id="cap_confirm" placeholder="Enter Captcha Code">
+                                <input type="text" class="form-control" name="track_cap_confirm" id="track_cap_confirm" placeholder="Enter Captcha Code">
                             </div>
                         </div>
                     </div>
@@ -161,10 +161,11 @@
             var f = alpha[Math.floor(Math.random()*71)];
 
             var code = a+b+c+d+e+f;
-            document.getElementById("cap_code").innerHTML=code;
+            document.getElementById("track_cap_code").innerHTML=code;
+            console.log(code);
         
             function validcap(){
-                confrm = document.getElementById("cap_confirm").value;
+                confrm = document.getElementById("track_cap_confirm").value;
 
                 if(code == confrm){
                     return true
