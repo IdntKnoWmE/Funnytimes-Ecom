@@ -1,0 +1,9 @@
+{% autoescape off %}
+    Welcome tp FunnyTimes,
+
+    Hello {{name}}!
+
+    Please confirm your email by clicking on the following links.
+
+    Confirmation Link: http://{{ domain }}{% url 'activate' uidb64=unique_id token=token %}
+{% endautoescape %}
