@@ -17,4 +17,6 @@ urlpatterns = [
     path('resume',views.resume,name="resume"),
     path('payment',views.payment,name="payment"),
     path('payment_status',views.payment_status,name='payment_status'),
+     path('profile',views.profile,name="profile"),
+     path('activate/<uidb64>/<token>',views.activate,name='activate'),
 ]

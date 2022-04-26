@@ -1,12 +1,14 @@
 
-
 from distutils.command.register import register
 from http import client
+from lib2to3.pgen2.tokenize import generate_tokens
 from locale import currency
 from urllib import response
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from numpy import product
+
+from ecom import settings
 from .models import Product,Contact,Order,Track_order
 import math
 import json
@@ -16,6 +18,12 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate,login as auth_login,logout as auth_logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import send_mail,EmailMessage
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes,force_str
+from . tokens import generate_token
 
 
 #create razorpay client
@@ -167,6 +175,10 @@ def search(request):
         
     return HttpResponse('404 - NotFound! ')
 
+#@login_required(login_url='/funnytimes/')
+def profile(request):
+    return render(request,"funnytimes/profile.html")
+
 
 #@login_required(login_url='/funnytimes/')
 def logout(request):
@@ -212,9 +224,33 @@ def signup(request):
             myuser = User.objects.create_user(user_email,user_email,user_passw)
             myuser.first_name = user_fname
             myuser.last_name = user_lname
+            myuser.is_active=False
             myuser.save()
 
-            messages.success(request,'Congratulation! Your account has been created.')
+            #confirmation email sent code
+            current_site_domain = get_current_site(request)
+            email_subject = 'Confirm your account @ funny-times Login!'
+
+            message = render_to_string('email_confirm.html',{
+                'name':myuser.first_name,
+                'domain':current_site_domain,
+                'unique_id':urlsafe_base64_encode(force_bytes(myuser.pk)),
+                'token' : generate_token.make_token(myuser)
+            })
+
+            email = EmailMessage(
+                email_subject,
+                message,
+                settings.EMAIL_HOST_USER,
+                [myuser.email],
+            )
+
+            email.fail_silently =True
+            email.send()
+
+
+            messages.info(request,'Confirmation link has been send to your Email id.')
+            messages.info(request,'Please confirm it for login!')
             return redirect('home')
 
     else:
@@ -277,3 +313,21 @@ def payment_status(request):
 
 def resume(request):
     return render(request,"funnytimes/Resume.html")
+
+
+def activate(request,uidb64,token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        myuser = User.objects.get(pk=uid)
+    except:
+        myuser = None
+    if myuser is not None and generate_token.check_token(myuser,token):
+        myuser.is_active = True
+        myuser.save()
+
+        auth_login(request,myuser)
+        messages.success(request,'Congrats! Your account has been Verified')
+        return redirect('home')
+    
+    else:
+        return HttpResponse('Error! 404')
