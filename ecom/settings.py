@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 from pathlib import Path
 from django.contrib.messages import constants as messages
+import email_cred
 
 
 
@@ -143,9 +144,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #Email sending code
 #EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackened'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = '587'
-EMAIL_USE_TLS = True
+EMAIL_HOST = email_cred.EMAIL_HOST
+EMAIL_PORT = email_cred.EMAIL_PORT
+EMAIL_USE_TLS = email_cred.EMAIL_USE_TLS
 
-EMAIL_HOST_USER = 'djangogeeks37@gmail.com'
-EMAIL_HOST_PASSWORD = 'Django5475@'
+EMAIL_HOST_USER = email_cred.EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = email_cred.EMAIL_HOST_PASSWORD
