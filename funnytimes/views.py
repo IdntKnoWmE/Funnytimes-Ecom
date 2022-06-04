@@ -5,7 +5,7 @@ from lib2to3.pgen2.tokenize import generate_tokens
 from locale import currency
 from urllib import response
 from django.shortcuts import redirect, render
-from django.http import HttpResponse
+from django.http import BadHeaderError, HttpResponse
 from numpy import product
 
 from ecom import settings
@@ -24,6 +24,7 @@ from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes,force_str
 from . tokens import generate_token
+from django.contrib.auth.forms import PasswordResetForm
 
 
 #create razorpay client
@@ -331,3 +332,41 @@ def activate(request,uidb64,token):
     
     else:
         return HttpResponse('Error! 404')
+
+
+def password_reset_request(request):
+    if request.method == "POST":
+        password_reset_form = PasswordResetForm(request.POST)
+        if password_reset_form.is_valid():
+            data = password_reset_form.cleaned_data['email']
+            associated_user = User.objects.filter(username=data)
+            if associated_user.exists():
+                associated_user = User.objects.get(username=data)
+                email_subject = "Password Reset Requested"
+                email_template_name = "funnytimes/password/password_reset_email.html"
+                current_site_domain = get_current_site(request)
+                message = render_to_string(email_template_name,{
+                'name': associated_user.first_name,
+                'domain':current_site_domain,
+                'unique_id':urlsafe_base64_encode(force_bytes(associated_user.pk)),
+                'token' : generate_token.make_token(associated_user),
+                'protocol': 'http',
+                })
+
+                email = EmailMessage(
+                    email_subject,
+                    message,
+                    settings.EMAIL_HOST_USER,
+                    [associated_user.email],
+                )
+
+                
+                try:
+                    email.fail_silently =True
+                    email.send()    
+                except BadHeaderError:
+                    return HttpResponse('Invalid header found.')
+                return redirect ("/password_reset_done/")
+    
+    password_reset_form = PasswordResetForm()
+    return render(request=request, template_name="funnytimes/password/password_reset.html", context={"password_reset_form":password_reset_form})

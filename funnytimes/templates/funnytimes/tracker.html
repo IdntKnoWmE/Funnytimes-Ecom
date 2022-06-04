@@ -4,18 +4,7 @@
 
 {% block css %}
     <style>
-        #cap_code{
-            color: green;
-            -webkit-user-drag: none;
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            -khtml-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-
-
-        }
+        
         td,th{
             font-size: large;
             font-weight: 600;
@@ -92,7 +81,8 @@
                         <h5><label for="captcha">Enter captcha:</label></h5>
                         <div class="row">
                             <div class="col-sm-5 my-2">
-                                <h5 class="form-control" id="track_cap_code"></h5>
+                                <h5 class="form-control" id="track_cap_code" onselectstart="return false"
+                                onCopy="return false" onCut="return false" onDrag="return false" onDrop="return false"></h5>
                             </div>
                             <div class="col-sm-5 my-2">
                                 <input type="text" class="form-control" name="track_cap_confirm" id="track_cap_confirm" placeholder="Enter Captcha Code">

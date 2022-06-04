@@ -23,17 +23,19 @@
                     
                                     <div class="form-group my-2">
                                         <h5><label for="user_id">Email Address</label></h5>
-                                        <input type="text" class="form-control" id="user_id" name="user_id" placeholder="Enter email or Phone Number..." required>
+                                        <input type="text" class="form-control" id="user_id" name="user_id" placeholder="Enter email address..." required>
                                     </div>
                                     <div class="form-group">
                                         <h5><label for="password">Password</label></h5>
                                         <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
                                     </div>
+                                    <a href='password_reset' class="fs-6 fst-italic m-2">Forgot Password?</a>
                                     <div class="form-group my-2">
                                         <h5><label for="captcha">Enter captcha:</label></h5>
                                         <div class="row">
                                             <div class="col-sm-5 my-2">
-                                                <h5 class="form-control" id="cap_code"></h5>
+                                                <h5 class="form-control" id="cap_code" onselectstart="return false"
+                                                onCopy="return false" onCut="return false" onDrag="return false" onDrop="return false"></h5>
                                             </div>
                                             <div class="col-sm-5 my-2">
                                                 <input type="text" class="form-control" name="cap_confirm" id="cap_confirm" placeholder="Enter Captcha Code" required>

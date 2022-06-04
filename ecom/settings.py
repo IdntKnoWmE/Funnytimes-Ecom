@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'funnytimes.apps.FunnytimesConfig',
     'corsheaders',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [

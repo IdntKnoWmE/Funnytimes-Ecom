@@ -107,7 +107,7 @@
       $ ('.cart').click(function(){
 
         var idstr = this.id.toString();
-        if(cart[idstr]!=undefined){
+        if(idstr in cart){
           cart[idstr][0] = cart[idstr][0]+1;
         }
         else{
@@ -155,7 +155,7 @@
           delete cart[btn_id];
         }
         localStorage.setItem('cart',JSON.stringify(cart));
-        //console.log(cart); 
+        console.log(cart); 
 
       });
       
@@ -163,15 +163,17 @@
       // action on clicking plus
       $ ('.qtybutton').on('click',"button.plus",function(){
         var btn_id = this.id.slice(4,);
-        if(cart.btn_id==undefined){
+        
+        if(btn_id in cart){
+          cart[btn_id][0] = cart[btn_id][0] + 1;
+        }
+        else{
           var qty =1;
           var name = document.getElementById("name"+btn_id).innerHTML;
           var price = document.getElementById("price"+btn_id).innerHTML;
           cart[btn_id] = [qty,name,price];
         }
-        else{
-        cart[btn_id][0] = cart[btn_id][0] + 1;
-        }
+        
         cart.total_item[0] = cart.total_item[0] + 1;
         
         update_popcart(cart);
