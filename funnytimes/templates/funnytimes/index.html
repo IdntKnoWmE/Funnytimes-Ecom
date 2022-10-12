@@ -13,6 +13,10 @@
         object-fit: contain;
       
       }
+
+      .page-link{
+        background-color: rgb(224, 219, 233);
+      }
     </style>
   {% endblock %}
 
@@ -85,7 +89,35 @@
           </div>
         </div>
       {% endfor %}
-    </div>
+      </div>
+      <nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+      
+          {% if products.has_previous %}
+            <li class="page-item">    
+              <a class="page-link" href="?page=1">&laquo;FIRST</a>
+            </li>
+            
+            <li class="page-item">
+              <a class="page-link" href="?page={{ products.previous_page_number }}"> PREVIOUS </a>
+            </li>
+          {% endif %}
+
+            
+          <li class="page-item">
+              <p class="page-link">Page {{ products.number }} of {{ products.paginator.num_pages }}.</p>
+          </li>
+  
+          {% if products.has_next %}
+            <li class="page-item"> 
+              <a class= "page-link" href="?page={{ products.next_page_number }}"> NEXT    </a>
+            </li>
+            <li class="page-item"> 
+              <a class="page-link" href="?page={{ products.paginator.num_pages }}"> LAST &raquo;</a>
+            </li>
+          {% endif %}
+    </ul>
+</nav>
     </div>
       
   {% endblock %}

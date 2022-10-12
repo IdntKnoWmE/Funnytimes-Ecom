@@ -25,6 +25,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes,force_str
 from . tokens import generate_token
 from django.contrib.auth.forms import PasswordResetForm
+from django.core.paginator import Paginator
 
 
 #create razorpay client
@@ -34,8 +35,13 @@ razorpay_client = razorpay.Client(auth=('rzp_test_Z0Lhe1QTy1gvQE','vGBLnePxznOuA
 def index(request):
     product = Product.objects.all()
     #print(product)
-    c=math.ceil(len(product)/3)
-    return render(request,"funnytimes/index.html",{'range':list(range(0,c,3)),'products':product})
+    
+    #Adding Pagination 10 per page
+    paginator = Paginator(product,10) #show 10 pages per page
+    page_number = request.GET.get('page')
+
+    product_obj = paginator.get_page(page_number)
+    return render(request,"funnytimes/index.html",{'products':product_obj})
 
 def about(request):
     return render(request,"funnytimes/about.html")
